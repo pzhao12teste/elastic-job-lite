@@ -1,16 +1,7 @@
 $(function() {
-    tooltipLocale();
     validate();
     bindSubmitJobSettingsForm();
-    bindResetForm();
 });
-
-function tooltipLocale(){
-    for (var i = 0; i < $("[data-toggle='tooltip']").length; i++) {
-        var object = $("[data-toggle='tooltip']")[i];
-        $(object).attr('title',$.i18n.prop("placeholder-" + object.getAttribute("id"))).tooltip('fixTitle');
-    }
-}
 
 function getJobParams() {
     var jobName = $("#job-overviews-name").text();
@@ -97,11 +88,11 @@ function validate() {
             shardingTotalCount: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("job-sharding-count-not-null")
+                        message: "分片数量不能为空"
                     },
                     regexp: {
                         regexp: /^(-?\d+)?$/,
-                        message: $.i18n.prop("job-sharding-count-should-be-integer")
+                        message: "分片数量只能是整数"
                     }
                 }
             },
@@ -109,10 +100,10 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 40,
-                        message: $.i18n.prop("job-cron-length-limit")
+                        message: "cron表达式不能超过40字符大小"
                     },
                     notEmpty: {
-                        message: $.i18n.prop("job-cron-not-null")
+                        message: "cron表达式不能为空"
                     }
                 }
             },
@@ -120,16 +111,16 @@ function validate() {
                 validators: {
                     regexp: {
                         regexp: /^(-?\d+)?$/,
-                        message: $.i18n.prop("job-monitor-port-should-be-integer")
+                        message: "监控端口只能是整数"
                     },
                     notEmpty: {
-                        message: $.i18n.prop("job-monitor-port-not-null")
+                        message: "监控端口不能为空"
                     },
                     callback: {
-                        message: $.i18n.prop("job-monitor-port-range-limit"),
+                        message: "监控端口范围必须在1000~65535之间，-1表示不启用端口监控",
                         callback: function(value, validator) {
                             var monitorPort = parseInt(validator.getFieldElements("monitorPort").val(), 10);
-                            if (monitorPort <= 65535) {
+                            if ((monitorPort >= 1000 && monitorPort <= 65535) || monitorPort === -1) {
                                 validator.updateStatus("monitorPort", "VALID");
                                 return true;
                             }
@@ -142,11 +133,5 @@ function validate() {
     });
     $("#job-config-form").submit(function(event) {
         event.preventDefault();
-    });
-}
-
-function bindResetForm() {
-    $("#reset").click(function() {
-        $("#job-config-form").data("bootstrapValidator").resetForm();
     });
 }

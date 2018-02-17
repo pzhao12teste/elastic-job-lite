@@ -37,7 +37,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,8 +68,6 @@ public final class FacadeService {
     
     private final DisableJobService disableJobService;
     
-    private final MesosStateService mesosStateService;
-    
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         appConfigService = new CloudAppConfigurationService(regCenter);
         jobConfigService = new CloudJobConfigurationService(regCenter);
@@ -79,7 +76,6 @@ public final class FacadeService {
         failoverService = new FailoverService(regCenter);
         disableAppService = new DisableAppService(regCenter);
         disableJobService = new DisableJobService(regCenter);
-        mesosStateService = new MesosStateService(regCenter);
     }
     
     /**
@@ -172,17 +168,10 @@ public final class FacadeService {
         if (!jobConfigOptional.isPresent()) {
             return;
         }
-        if (isDisable(jobConfigOptional.get())) {
-            return;
-        }
         CloudJobConfiguration jobConfig = jobConfigOptional.get();
         if (jobConfig.getTypeConfig().getCoreConfig().isFailover() || CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
-    }
-    
-    private boolean isDisable(final CloudJobConfiguration jobConfiguration) {
-        return disableAppService.isDisabled(jobConfiguration.getAppName()) || disableJobService.isDisabled(jobConfiguration.getJobName());
     }
     
     /**
@@ -230,13 +219,6 @@ public final class FacadeService {
      * @param jobName 作业名称
      */
     public void addDaemonJobToReadyQueue(final String jobName) {
-        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(jobName);
-        if (!jobConfigOptional.isPresent()) {
-            return;
-        }
-        if (isDisable(jobConfigOptional.get())) {
-            return;
-        }
         readyService.addDaemon(jobName);
     }
     
@@ -327,15 +309,6 @@ public final class FacadeService {
      */
     public void disableJob(final String jobName) {
         disableJobService.add(jobName);
-    }
-    
-    /**
-     * 获取所有正在运行的Executor的信息.
-     * 
-     * @return Executor信息集合
-     */
-    public Collection<MesosStateService.ExecutorStateInfo> loadExecutorInfo() throws JSONException {
-        return mesosStateService.executors();
     }
     
     /**

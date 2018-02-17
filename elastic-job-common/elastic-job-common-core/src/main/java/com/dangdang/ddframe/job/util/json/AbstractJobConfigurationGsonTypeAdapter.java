@@ -161,7 +161,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
             case SCRIPT:
                 return new ScriptJobConfiguration(coreConfig, scriptCommandLine);
             default:
-                throw new UnsupportedOperationException(String.valueOf(jobType));
+                throw new UnsupportedOperationException(jobType.name());
         }
     }
     

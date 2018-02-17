@@ -86,27 +86,6 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         if (instances.isEmpty()) {
             return JobStatus.CRASHED;
         }
-        if (isAllDisabled(jobNodePath)) {
-            return JobStatus.DISABLED;
-        }
-        if (isHasShardingFlag(jobNodePath, instances)) {
-            return JobStatus.SHARDING_FLAG;
-        }
-        return JobStatus.OK;
-    }
-    
-    private boolean isAllDisabled(final JobNodePath jobNodePath) {
-        List<String> serversPath = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
-        int disabledServerCount = 0;
-        for (String each : serversPath) {
-            if (JobStatus.DISABLED.name().equals(regCenter.get(jobNodePath.getServerNodePath(each)))) {
-                disabledServerCount++;
-            }
-        }
-        return disabledServerCount == serversPath.size();
-    }
-    
-    private boolean isHasShardingFlag(final JobNodePath jobNodePath, final List<String> instances) {
         Set<String> shardingInstances = new HashSet<>();
         for (String each : regCenter.getChildrenKeys(jobNodePath.getShardingNodePath())) {
             String instanceId = regCenter.get(jobNodePath.getShardingNodePath(each, "instance"));
@@ -114,7 +93,17 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
                 shardingInstances.add(instanceId);
             }
         }
-        return !instances.containsAll(shardingInstances) || shardingInstances.isEmpty();
+        if (!instances.containsAll(shardingInstances) || shardingInstances.isEmpty()) {
+            return JobStatus.SHARDING_ERROR;
+        }
+        List<String> serversPath = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        int disabledServerCount = 0;
+        for (String each : serversPath) {
+            if ("DISABLED".equals(regCenter.get(jobNodePath.getServerNodePath(each)))) {
+                disabledServerCount++;
+            }
+        }
+        return disabledServerCount == serversPath.size() ? JobStatus.DISABLED : JobStatus.OK;
     }
     
     private int getJobInstanceCount(final String jobName) {

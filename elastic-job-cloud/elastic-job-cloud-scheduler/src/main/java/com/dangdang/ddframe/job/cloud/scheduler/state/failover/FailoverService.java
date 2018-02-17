@@ -105,8 +105,10 @@ public final class FailoverService {
                 continue;
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
-            if (!assignedShardingItems.isEmpty() && jobConfig.isPresent()) {
-                result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
+            if (!assignedShardingItems.isEmpty()) {
+                if (jobConfig.isPresent()) {
+                    result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
+                }
             }
         }
         return result;

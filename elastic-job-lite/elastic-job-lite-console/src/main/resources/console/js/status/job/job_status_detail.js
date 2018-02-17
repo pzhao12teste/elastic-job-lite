@@ -11,38 +11,59 @@ function renderShardingTable() {
     $("#sharding").bootstrapTable({
         url: "/api/jobs/" + jobName + "/sharding",
         cache: false,
-        search: true,
-        showRefresh: true,
-        showColumns: true
-    }).on("all.bs.table", function() {
-        doLocale();
+        columns: [
+            {
+                field: "item",
+                title: "分片项",
+                sortable: "true"
+            }, {
+                field: "serverIp",
+                title: "服务器IP",
+                sortable: "true"
+            }, {
+                field: "instanceId",
+                title: "进程ID",
+                sortable: "true"
+            }, {
+                field: "status",
+                title: "状态",
+                formatter: "shardingStatusFormatter"
+            }, {
+                field: "failover",
+                title: "失效转移",
+                formatter: "failoverFormatter"
+            }, {
+                field: "operation",
+                title: "操作",
+                formatter: "generateOperationButtons"
+            }]
     });
 }
 
 function shardingStatusFormatter(value, row) {
     switch(value) {
         case "DISABLED":
-            return "<span class='label label-warning' data-lang='status-disabled'></span>";
+            return "<span class='label label-warning'>禁用中</span>";
             break;
         case "RUNNING":
-            return "<span class='label label-primary' data-lang='status-running'></span>";
+            return "<span class='label label-primary'>运行中</span>";
             break;
-        case "SHARDING_FLAG":
-            return "<span class='label label-info' data-lang='' data-lang='status-sharding-flag'></span>";
+        case "SHARDING_ERROR":
+            return "<span class='label label-info'>分片调整中</span>";
             break;
         default:
-            return "<span class='label label-default' data-lang='status-staging'></span>";
+            return "<span class='label label-default'>等待运行</span>";
             break;
     }
 }
 
 function failoverFormatter(value, row) {
-    return value ? "Y" : "-";
+    return value ? "是" : "-";
 }
 
 function generateOperationButtons(val, row) {
-    var disableButton = "<button operation='disable-sharding' class='btn-xs btn-warning' job-name='" + row.jobName + "' item='" + row.item + "' data-lang='operation-disable'></button>";
-    var enableButton = "<button operation='enable-sharding' class='btn-xs btn-success' job-name='" + row.jobName + "' item='" + row.item + "' data-lang='operation-enable'></button>";
+    var disableButton = "<button operation='disable-sharding' class='btn-xs btn-warning' job-name='" + row.jobName + "' item='" + row.item + "' >禁用</button>";
+    var enableButton = "<button operation='enable-sharding' class='btn-xs btn-success' job-name='" + row.jobName + "' item='" + row.item + "' >启用</button>";
     if ("DISABLED" === row.status) {
         return enableButton;
     } else {
@@ -89,8 +110,6 @@ function bindEnableButton() {
 
 function renderBreadCrumbMenu() {
     $("#breadcrumb-job").click(function() {
-        $("#content").load("html/status/job/jobs_status_overview.html", null, function(){
-            doLocale();
-        });
+        $("#content").load("html/status/job/jobs_status_overview.html");
     });
 }

@@ -9,11 +9,7 @@ $(function() {
         $("#content-right").load("/html/job/jobs_overview.html");
     });
     $("#status").click(function() {
-        $("#content-right").load("/html/job/job_status.html", null, function(){
-            $("table").bootstrapTable().on("all.bs.table", function() {
-                doLocale();
-            });
-        });
+        $("#content-right").load("/html/job/job_status.html");
     });
     $("#dashboard").click(function() {
         $("#content-right").load("/html/history/job_dashboard.html");
@@ -24,5 +20,4 @@ $(function() {
     $("#exec-status").click(function() {
         $("#content-right").load("/html/history/job_exec_status.html");
     });
-    switchLanguage();
 });

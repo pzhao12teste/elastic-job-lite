@@ -218,12 +218,20 @@ public final class JobEventRdbSearch {
                     preparedStatement.setString(index++, String.valueOf(entry.getValue()));
                 }
             }
+            
+            
+//            for (String each : condition.getFields().keySet()) {
+//                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
+//                if (null != condition.getFields().get(each) && tableFields.contains(lowerUnderscore)) {
+//                    preparedStatement.setString(index++, String.valueOf(condition.getFields().get(each)));
+//                }
+//            }
         }
         if (null != condition.getStartTime()) {
             preparedStatement.setTimestamp(index++, new Timestamp(condition.getStartTime().getTime()));
         }
         if (null != condition.getEndTime()) {
-            preparedStatement.setTimestamp(index, new Timestamp(condition.getEndTime().getTime()));
+            preparedStatement.setTimestamp(index++, new Timestamp(condition.getEndTime().getTime()));
         }
     }
     

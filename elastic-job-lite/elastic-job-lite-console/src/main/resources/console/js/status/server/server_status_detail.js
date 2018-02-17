@@ -11,35 +11,48 @@ function renderJobs() {
     $("#server-jobs-tbl").bootstrapTable({
         url: "/api/servers/" + ip + "/jobs",
         cache: false,
-        search: true,
-        showRefresh: true,
-        showColumns: true
-    }).on("all.bs.table", function() {
-        doLocale();
+        columns: 
+        [{
+            field: "jobName",
+            title: "作业名",
+            sortable: "true"
+        }, {
+            field: "instanceCount",
+            title: "运行实例数"
+        }, {
+            field: "status",
+            title: "状态",
+            sortable: "true",
+            formatter: "statusFormatter"
+        }, {
+            field: "operation",
+            title: "操作",
+            formatter: "generateOperationButtons"
+        }]
     });
 }
 
 function statusFormatter(val, row) {
     if (0 === row.instanceCount ) {
-        return "<span class='label label-default' data-lang='status-offline'></span>";
+        return "<span class='label label-default'>已下线</span>";
     }
     switch(val) {
         case "OK":
-            return "<span class='label label-success' data-lang='status-enabled'></span>";
+            return "<span class='label label-success'>已启用</span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning' data-lang='status-disabled'></span>";
+            return "<span class='label label-warning'>已禁用</span>";
             break;
     }
 }
 
 function generateOperationButtons(val, row) {
     if (0 === row.instanceCount ) {
-        return "<button operation='remove-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='operation-remove'></button>";
+        return "<button operation='remove-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>清理</button>";
     }
-    var disableButton = "<button operation='disable-server-job' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "' data-lang='operation-disable'></button>";
-    var enableButton = "<button operation='enable-server-job' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "' data-lang='operation-enable'></button>";
-    var shutdownButton = "<button operation='shutdown-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='operation-shutdown'></button>";
+    var disableButton = "<button operation='disable-server-job' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
+    var enableButton = "<button operation='enable-server-job' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
+    var shutdownButton = "<button operation='shutdown-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
     var operationTd = "";
     if ("DISABLED" === row.status) {
         operationTd = enableButton + "&nbsp;" + shutdownButton;
@@ -131,8 +144,6 @@ function bindRemoveButton() {
 
 function renderBreadCrumbMenu() {
     $("#breadcrumb-server").click(function() {
-        $("#content").load("html/status/server/servers_status_overview.html", null, function(){
-            doLocale();
-        });
+        $("#content").load("html/status/server/servers_status_overview.html");
     });
 }

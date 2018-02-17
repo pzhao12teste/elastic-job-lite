@@ -186,11 +186,6 @@ public final class CloudAppRestfulApi {
     public void enable(@PathParam("appName") final String appName) throws JSONException {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.remove(appName);
-            for (CloudJobConfiguration each : jobConfigService.loadAll()) {
-                if (appName.equals(each.getAppName())) {
-                    producerManager.reschedule(each.getJobName());
-                }
-            }
         }
     }
     

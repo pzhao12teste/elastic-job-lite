@@ -29,14 +29,6 @@ import lombok.NoArgsConstructor;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.DISABLED;
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_CLASS;
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.MAX_TIME_DIFF_SECONDS;
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.MONITOR_EXECUTION;
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.MONITOR_PORT;
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.OVERWRITE;
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES;
-
 /**
  * Lite作业配置的Gson工厂.
  *
@@ -89,25 +81,25 @@ public final class LiteJobConfigurationGsonFactory {
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
             switch (jsonName) {
-                case MONITOR_EXECUTION:
+                case "monitorExecution":
                     customizedValueMap.put(jsonName, in.nextBoolean());
                     break;
-                case MAX_TIME_DIFF_SECONDS:
+                case "maxTimeDiffSeconds":
                     customizedValueMap.put(jsonName, in.nextInt());
                     break;
-                case MONITOR_PORT:
+                case "monitorPort":
                     customizedValueMap.put(jsonName, in.nextInt());
                     break;
-                case JOB_SHARDING_STRATEGY_CLASS:
+                case "jobShardingStrategyClass":
                     customizedValueMap.put(jsonName, in.nextString());
                     break;
-                case RECONCILE_INTERVAL_MINUTES:
+                case "reconcileIntervalMinutes":
                     customizedValueMap.put(jsonName, in.nextInt());
                     break;
-                case DISABLED:
+                case "disabled":
                     customizedValueMap.put(jsonName, in.nextBoolean());
                     break;
-                case OVERWRITE:
+                case "overwrite":
                     customizedValueMap.put(jsonName, in.nextBoolean());
                     break;
                 default:
@@ -119,39 +111,39 @@ public final class LiteJobConfigurationGsonFactory {
         @Override
         protected LiteJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
             LiteJobConfiguration.Builder builder = LiteJobConfiguration.newBuilder(typeConfig);
-            if (customizedValueMap.containsKey(MONITOR_EXECUTION)) {
-                builder.monitorExecution((boolean) customizedValueMap.get(MONITOR_EXECUTION));
+            if (customizedValueMap.containsKey("monitorExecution")) {
+                builder.monitorExecution((boolean) customizedValueMap.get("monitorExecution"));
             }
-            if (customizedValueMap.containsKey(MAX_TIME_DIFF_SECONDS)) {
-                builder.maxTimeDiffSeconds((int) customizedValueMap.get(MAX_TIME_DIFF_SECONDS));
+            if (customizedValueMap.containsKey("maxTimeDiffSeconds")) {
+                builder.maxTimeDiffSeconds((int) customizedValueMap.get("maxTimeDiffSeconds"));
             }
-            if (customizedValueMap.containsKey(MONITOR_PORT)) {
-                builder.monitorPort((int) customizedValueMap.get(MONITOR_PORT));
+            if (customizedValueMap.containsKey("monitorPort")) {
+                builder.monitorPort((int) customizedValueMap.get("monitorPort"));
             }
-            if (customizedValueMap.containsKey(JOB_SHARDING_STRATEGY_CLASS)) {
-                builder.jobShardingStrategyClass((String) customizedValueMap.get(JOB_SHARDING_STRATEGY_CLASS));
+            if (customizedValueMap.containsKey("jobShardingStrategyClass")) {
+                builder.jobShardingStrategyClass((String) customizedValueMap.get("jobShardingStrategyClass"));
             }
-            if (customizedValueMap.containsKey(RECONCILE_INTERVAL_MINUTES)) {
-                builder.reconcileIntervalMinutes((int) customizedValueMap.get(RECONCILE_INTERVAL_MINUTES));
+            if (customizedValueMap.containsKey("reconcileIntervalMinutes")) {
+                builder.reconcileIntervalMinutes((int) customizedValueMap.get("reconcileIntervalMinutes"));
             }
-            if (customizedValueMap.containsKey(DISABLED)) {
-                builder.disabled((boolean) customizedValueMap.get(DISABLED));
+            if (customizedValueMap.containsKey("disabled")) {
+                builder.disabled((boolean) customizedValueMap.get("disabled"));
             }
-            if (customizedValueMap.containsKey(OVERWRITE)) {
-                builder.overwrite((boolean) customizedValueMap.get(OVERWRITE));
+            if (customizedValueMap.containsKey("overwrite")) {
+                builder.overwrite((boolean) customizedValueMap.get("overwrite"));
             }
             return builder.build();
         }
         
         @Override
         protected void writeCustomized(final JsonWriter out, final LiteJobConfiguration value) throws IOException {
-            out.name(MONITOR_EXECUTION).value(value.isMonitorExecution());
-            out.name(MAX_TIME_DIFF_SECONDS).value(value.getMaxTimeDiffSeconds());
-            out.name(MONITOR_PORT).value(value.getMonitorPort());
-            out.name(JOB_SHARDING_STRATEGY_CLASS).value(value.getJobShardingStrategyClass());
-            out.name(RECONCILE_INTERVAL_MINUTES).value(value.getReconcileIntervalMinutes());
-            out.name(DISABLED).value(value.isDisabled());
-            out.name(OVERWRITE).value(value.isOverwrite());
+            out.name("monitorExecution").value(value.isMonitorExecution());
+            out.name("maxTimeDiffSeconds").value(value.getMaxTimeDiffSeconds());
+            out.name("monitorPort").value(value.getMonitorPort());
+            out.name("jobShardingStrategyClass").value(value.getJobShardingStrategyClass());
+            out.name("reconcileIntervalMinutes").value(value.getReconcileIntervalMinutes());
+            out.name("disabled").value(value.isDisabled());
+            out.name("overwrite").value(value.isOverwrite());
         }
     }
 }

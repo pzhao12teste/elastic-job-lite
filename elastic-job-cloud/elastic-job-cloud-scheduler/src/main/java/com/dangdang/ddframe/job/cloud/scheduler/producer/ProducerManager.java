@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.state.disable.app.DisableAppService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
@@ -55,8 +54,6 @@ public final class ProducerManager {
     
     private final RunningService runningService;
     
-    private final DisableAppService disableAppService;
-    
     private final DisableJobService disableJobService;
     
     private final TransientProducerScheduler transientProducerScheduler;
@@ -69,7 +66,6 @@ public final class ProducerManager {
         configService = new CloudJobConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
-        disableAppService = new DisableAppService(regCenter);
         disableJobService = new DisableJobService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
     }
@@ -117,7 +113,7 @@ public final class ProducerManager {
             throw new JobConfigurationException("Cannot found job '%s', please register first.", jobConfig.getJobName());
         }
         configService.update(jobConfig);
-        reschedule(jobConfig.getJobName());
+        reschedule(jobConfig);
     }
     
     /**
@@ -130,6 +126,7 @@ public final class ProducerManager {
         if (jobConfig.isPresent()) {
             disableJobService.remove(jobName);
             configService.remove(jobName);
+            transientProducerScheduler.deregister(jobConfig.get());
         }
         unschedule(jobName);
     }
@@ -140,7 +137,7 @@ public final class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void schedule(final CloudJobConfiguration jobConfig) {
-        if (disableAppService.isDisabled(jobConfig.getAppName()) || disableJobService.isDisabled(jobConfig.getJobName())) {
+        if (disableJobService.isDisabled(jobConfig.getAppName())) {
             return;
         }
         if (CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
@@ -161,23 +158,16 @@ public final class ProducerManager {
         }
         runningService.remove(jobName);
         readyService.remove(Lists.newArrayList(jobName));
-        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (jobConfig.isPresent()) {
-            transientProducerScheduler.deregister(jobConfig.get());
-        }
     }
     
     /**
      * 重新调度作业.
      *
-     * @param jobName 作业名称
+     * @param jobConfig 作业配置
      */
-    public void reschedule(final String jobName) {
-        unschedule(jobName);
-        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (jobConfig.isPresent()) {
-            schedule(jobConfig.get());
-        }
+    public void reschedule(final CloudJobConfiguration jobConfig) {
+        unschedule(jobConfig.getJobName());
+        schedule(jobConfig);
     }
     
     /**

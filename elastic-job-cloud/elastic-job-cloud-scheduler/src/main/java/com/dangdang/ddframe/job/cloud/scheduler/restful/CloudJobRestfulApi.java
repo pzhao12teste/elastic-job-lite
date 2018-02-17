@@ -184,10 +184,8 @@ public final class CloudJobRestfulApi {
     @DELETE
     @Path("/{jobName}/disable")
     public void enable(@PathParam("jobName") final String jobName) throws JSONException {
-        Optional<CloudJobConfiguration> configOptional = configService.load(jobName);
-        if (configOptional.isPresent()) {
+        if (configService.load(jobName).isPresent()) {
             facadeService.enableJob(jobName);
-            producerManager.reschedule(jobName);
         }
     }
     

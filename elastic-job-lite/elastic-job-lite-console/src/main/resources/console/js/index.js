@@ -6,6 +6,9 @@ $(function() {
     $("#event-trace-data-source").click(function() {
         $("#content").load("html/global/event_trace_data_source.html");
     });
+    $("#job-config").click(function() {
+        $("#content").load("html/job/jobs_overview.html");
+    });
     $("#job-status").click(function() {
         $("#content").load("html/status/job/jobs_status_overview.html");
     });
@@ -19,12 +22,6 @@ $(function() {
         $("#content").load("html/history/job_status_history.html");
     });
     $("#help").click(function() {
-        $("#content").load("html/help/help.html", null, function(){
-            doLocale();
-        });
+        $("#content").load("html/help/help.html");
     });
-    switchLanguage();
-
-    //初始化显示语言
-    initLanguage();
 });

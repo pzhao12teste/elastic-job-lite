@@ -42,6 +42,6 @@ public final class ShardingStatusTest {
     
     @Test
     public void assertGetShardingStatusWhenIsShardingError() {
-        assertThat(ShardingStatus.getShardingStatus(false, false,  true), is(ShardingStatus.SHARDING_FLAG));
+        assertThat(ShardingStatus.getShardingStatus(false, false,  true), is(ShardingStatus.SHARDING_ERROR));
     }
 }

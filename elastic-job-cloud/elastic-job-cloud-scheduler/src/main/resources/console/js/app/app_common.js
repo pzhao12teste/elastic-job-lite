@@ -10,14 +10,18 @@ function validate() {
             appName: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("app-name-not-null")
+                        message: "应用名称不能为空"
                     },
                     stringLength: {
                         max: 100,
-                        message: $.i18n.prop("app-name-length-limit")
+                        message: "应用名称长度不能超过100字符大小"
+                    },
+                    regexp: {
+                        regexp: /^[\w\.-]+$/,
+                        message: "应用名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     },
                     callback: {
-                        message: $.i18n.prop("app-name-exists"),
+                        message: "应用已经注册",
                         callback: function() {
                             var appName = $("#app-name").val();
                             var result = true;
@@ -39,42 +43,42 @@ function validate() {
             bootstrapScript: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("app-bootstrap-script-not-null")
+                        message: "启动脚本不能为空"
                     }
                 }
             },
             cpuCount: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("app-cpu-count-not-null")
+                        message: "cpu数量不能为空"
                     },
                     regexp: {
                         regexp: /^(-?\d+)(\.\d+)?$/,
-                        message: $.i18n.prop("app-cpu-count-regexp-limit")
+                        message: "cpu数量只能包含数字和小数点"
                     }
                 }
             },
             appMemory: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("app-memory-not-null")
+                        message: "单片内存不能为空"
                     }
                 }
             },
             eventTraceSamplingCount: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("event-trace-sampling-count-not-null")
+                        message: "作业事件采样次数(Daemon)不能为空"
                     }
                 }
             },
             appURL: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("app-url-not-null")
+                        message: "应用所在路径不能为空"
                     }
                 }
-            }
+            },
         }
     });
 }

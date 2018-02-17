@@ -56,8 +56,8 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
     public enum ShardingStatus {
         
         DISABLED, 
-        RUNNING,
-        SHARDING_FLAG,
+        RUNNING, 
+        SHARDING_ERROR,
         PENDING;
     
         /**
@@ -65,18 +65,18 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
          * 
          * @param isDisabled 是否被禁用 
          * @param isRunning 是否在运行
-         * @param isShardingFlag 是否需要分片
+         * @param isShardingError 是否分片错误
          * @return 作业运行时状态
          */
-        public static ShardingStatus getShardingStatus(final boolean isDisabled, final boolean isRunning, final boolean isShardingFlag) {
+        public static ShardingStatus getShardingStatus(final boolean isDisabled, final boolean isRunning, final boolean isShardingError) {
             if (isDisabled) {
                 return DISABLED;
             }
             if (isRunning) {
                 return RUNNING;
             }
-            if (isShardingFlag) {
-                return SHARDING_FLAG;
+            if (isShardingError) {
+                return SHARDING_ERROR;
             }
             return PENDING;
         }

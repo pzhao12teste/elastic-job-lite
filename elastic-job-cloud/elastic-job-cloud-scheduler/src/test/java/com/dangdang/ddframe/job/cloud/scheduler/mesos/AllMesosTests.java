@@ -28,14 +28,13 @@ import org.junit.runners.Suite;
         JobTaskRequestTest.class, 
         TaskInfoDataTest.class, 
         FacadeServiceTest.class, 
-        SchedulerEngineTest.class, 
-        TaskLaunchScheduledServiceTest.class, 
-        SchedulerServiceTest.class, 
-        LaunchingTasksTest.class, 
-        FrameworkIDServiceTest.class, 
-        MesosStateServiceTest.class, 
-        ReconcileServiceTest.class, 
-        AppConstraintEvaluatorTest.class
+        SchedulerEngineTest.class,
+        TaskLaunchScheduledServiceTest.class,
+        SchedulerServiceTest.class,
+        LaunchingTasksTest.class,
+        FrameworkIDServiceTest.class,
+        MesosStateServiceTest.class,
+        ReconcileServiceTest.class
     })
 public final class AllMesosTests {
 }

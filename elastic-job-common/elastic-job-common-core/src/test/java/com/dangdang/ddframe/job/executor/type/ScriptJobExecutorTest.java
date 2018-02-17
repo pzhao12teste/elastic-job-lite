@@ -60,7 +60,8 @@ public final class ScriptJobExecutorTest {
         assertExecuteWhenExecuteFailure(ShardingContextsBuilder.getMultipleShardingContexts());
     }
     
-    private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) {
+    @SuppressWarnings("unchecked")
+    private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) throws IOException, NoSuchFieldException {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file", ThrowJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
